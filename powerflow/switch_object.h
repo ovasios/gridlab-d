@@ -28,7 +28,7 @@ public:
 public:
 	typedef enum {SW_OPEN=0, SW_CLOSED=1} SWITCHSTATE;
 	typedef enum {INDIVIDUAL_SW=0, BANKED_SW=1} SWITCHBANK;
-	unsigned char prev_full_status;	///Fully resolved status (ABC) - used for reliability and recalculation detection
+	int16 prev_full_status;	///Fully resolved status (ABC) - used for reliability and recalculation detection
 
 	int create(void);
 	int init(OBJECT *parent);
@@ -54,8 +54,8 @@ public:
 
 	enumeration switch_banked_mode;
 
-	unsigned char phased_switch_status;	//Used to track individual phase switch position - mainly for reliability - use LSB - x0_XABC
-	unsigned char faulted_switch_phases;	//Used for phase faulting tracking - mainly for reliabiilty - replicated NR functionality so FBS can use it later
+	int16 phased_switch_status;	//Used to track individual phase switch position - mainly for reliability - use LSB - x0_XABC
+	int16 faulted_switch_phases;	//Used for phase faulting tracking - mainly for reliabiilty - replicated NR functionality so FBS can use it later
 	bool prefault_banked;				//Flag used to indicate if a switch was in banked mode pre-fault.  Needs to be swapped out to properly work
 	enumeration phase_A_state;				///< Defines the current state of the phase A switch
 	enumeration phase_B_state;				///< Defines the current state of the phase B switch

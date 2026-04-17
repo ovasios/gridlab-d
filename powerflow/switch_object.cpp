@@ -51,6 +51,9 @@ switch_object::switch_object(MODULE *mod) : link_object(mod)
 			PT_complex, "switch_impedance[Ohm]",PADDR(switch_impedance_value), PT_DESCRIPTION,"Impedance value of the swtich when closed",
 			PT_double, "switch_resistance[Ohm]",PADDR(switch_impedance_value.Re()), PT_DESCRIPTION,"Resistance portion of impedance value of the switch when it is closed.",
 			PT_double, "switch_reactance[Ohm]", PADDR(switch_impedance_value.Im()), PT_DESCRIPTION, "Reactance portion of impedance value of the switch when it is closed.",
+			PT_int16, "prev_full_status", PADDR(prev_full_status), PT_ACCESS, PA_HIDDEN, PT_DESCRIPTION, "CHECKPOINT VAR: Fully resolved status (ABC) - used for reliability and recalculation detection",
+			PT_int16, "phased_switch_status", PADDR(phased_switch_status), PT_ACCESS, PA_HIDDEN, PT_DESCRIPTION, "CHECKPOINT VAR: Used to track individual phase switch position - mainly for reliability - use LSB - x0_XABC",
+			PT_int16, "faulted_switch_phases", PADDR(faulted_switch_phases), PT_ACCESS, PA_HIDDEN, PT_DESCRIPTION, "CHECKPOINT VAR: Used for phase faulting tracking - mainly for reliabiilty - replicated NR functionality so FBS can use it later",
 			nullptr) < 1) GL_THROW("unable to publish properties in %s",__FILE__);
 
 			if (gl_publish_function(oclass,"change_switch_state",(FUNCTIONADDR)change_switch_state)==nullptr)
