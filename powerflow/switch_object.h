@@ -40,8 +40,8 @@ public:
 
 	void set_switch(bool desired_status);
 	void set_switch_full(char desired_status_A, char desired_status_B, char desired_status_C);	//Used to set individual phases - 0 = open, 1 = closed, 2 = don't care (retain current)
-	void set_switch_full_reliability(unsigned char desired_status);
-	void set_switch_faulted_phases(unsigned char desired_status);
+	void set_switch_full_reliability(int16 desired_status);
+	void set_switch_faulted_phases(int16 desired_status);
 	void switch_sync_function(void);			//Functionalized since it exists in two spots - no sense having to update two pieces of code
 	unsigned char switch_expected_sync_function(void);	//Function to determined expected results of sync - used for reliability
 	static OBJECT **get_object(OBJECT *obj, const char *name);	//Function to pull object property - reliability use

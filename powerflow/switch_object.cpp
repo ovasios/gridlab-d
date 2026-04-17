@@ -821,7 +821,7 @@ TIMESTAMP switch_object::presync(TIMESTAMP t0)
 	bool closing = true;
 	TIMESTAMP repair_time = TS_NEVER;
 	OBJECT *protect_obj = nullptr;
-	unsigned char phase_changes = 0x00;
+	int16 phase_changes = 0x00;
 
 	if (local_switching) {
 		if (switch_banked_mode == BANKED_SW) { // if any phase state has changed, they all follow the leader
@@ -1772,9 +1772,10 @@ void switch_object::set_switch_full(char desired_status_A, char desired_status_B
 //Function to externally set switch status - mainly for "out of step" updates under NR solver
 //where admittance needs to be updated - this function tracks switching position for reliability faults
 //Prevents system from magically "turning back on" a single islanded switch when removed as a downstream element
-void switch_object::set_switch_full_reliability(unsigned char desired_status)
+void switch_object::set_switch_full_reliability(int16 desired_status)
 {
-	unsigned char desA, desB, desC, phase_change;
+	unsigned char desA, desB, desC; 
+	int16 phase_change;
 
 	gl_verbose ("set_switch_full_reliability:%s:%d:%d:%d", get_name(), phased_switch_status, int(desired_status), local_switching);
 
@@ -1920,7 +1921,7 @@ OBJECT **switch_object::get_object(OBJECT *obj, const char *name)
 }
 
 //Function to adjust "faulted phases" block - in case something has tried to restore itself
-void switch_object::set_switch_faulted_phases(unsigned char desired_status)
+void switch_object::set_switch_faulted_phases(int16 desired_status)
 {
 	gl_verbose ("set_switch_faulted_phases:%d", desired_status);
 	//Remove from the fault tracker
@@ -2189,7 +2190,7 @@ EXPORT int reliability_operation(OBJECT *thisobj, unsigned char desired_phases)
 	//Map the switch
 	switch_object *swtchobj = object_data<switch_object>(thisobj);
 
-	swtchobj->set_switch_full_reliability(desired_phases);
+	swtchobj->set_switch_full_reliability(int16(desired_phases));
 
 	return 1;	//This will always succeed...because I say so!
 }
@@ -2245,7 +2246,7 @@ EXPORT int switch_fault_updates(OBJECT *thisobj, unsigned char restoration_phase
 	switch_object *thisswitch = object_data<switch_object>(thisobj);
 
 	//Call the update
-	thisswitch->set_switch_faulted_phases(restoration_phases);
+	thisswitch->set_switch_faulted_phases(int16(restoration_phases));
 
 	return 1;	//We magically always succeed
 }
