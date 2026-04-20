@@ -196,6 +196,22 @@ link_object::link_object(MODULE *mod) : powerflow_object(mod)
 								PT_KEYWORD, "UNDEFINED", (enumeration)IRM_UNDEFINED,
 								PT_KEYWORD, "TRAPEZOIDAL", (enumeration)IRM_TRAPEZOIDAL,
 								PT_KEYWORD, "BACKWARD_EULER", (enumeration)IRM_BACKEULER,
+								PT_double, "inrush_vdiffmag_prev_A[V]", PADDR(inrush_vdiffmag_prev[0]), PT_ACCESS, PA_HIDDEN, PT_DESCRIPTION, "CHECKPOINT VAR: previous inrush voltage-difference magnitude, phase A",
+								PT_double, "inrush_vdiffmag_prev_B[V]", PADDR(inrush_vdiffmag_prev[1]), PT_ACCESS, PA_HIDDEN, PT_DESCRIPTION, "CHECKPOINT VAR: previous inrush voltage-difference magnitude, phase B",
+								PT_double, "inrush_vdiffmag_prev_C[V]", PADDR(inrush_vdiffmag_prev[2]), PT_ACCESS, PA_HIDDEN, PT_DESCRIPTION, "CHECKPOINT VAR: previous inrush voltage-difference magnitude, phase C",
+								PT_complex, "saturation_calculated_vals_0", PADDR(saturation_calculated_vals[0]), PT_ACCESS, PA_HIDDEN, PT_DESCRIPTION, "CHECKPOINT VAR: saturation calculation values [0]",
+								PT_complex, "saturation_calculated_vals_1", PADDR(saturation_calculated_vals[1]), PT_ACCESS, PA_HIDDEN, PT_DESCRIPTION, "CHECKPOINT VAR: saturation calculation values [1]",
+								PT_complex, "saturation_calculated_vals_2", PADDR(saturation_calculated_vals[2]), PT_ACCESS, PA_HIDDEN, PT_DESCRIPTION, "CHECKPOINT VAR: saturation calculation values [2]",
+								PT_complex, "saturation_calculated_vals_3", PADDR(saturation_calculated_vals[3]), PT_ACCESS, PA_HIDDEN, PT_DESCRIPTION, "CHECKPOINT VAR: saturation calculation values [3]",
+								PT_complex, "saturation_calculated_vals_4", PADDR(saturation_calculated_vals[4]), PT_ACCESS, PA_HIDDEN, PT_DESCRIPTION, "CHECKPOINT VAR: saturation calculation values [4]",
+								PT_complex, "saturation_calculated_vals_5", PADDR(saturation_calculated_vals[5]), PT_ACCESS, PA_HIDDEN, PT_DESCRIPTION, "CHECKPOINT VAR: saturation calculation values [5]",
+								PT_complex, "saturation_calculated_vals_6", PADDR(saturation_calculated_vals[6]), PT_ACCESS, PA_HIDDEN, PT_DESCRIPTION, "CHECKPOINT VAR: saturation calculation values [6]",
+								PT_complex, "saturation_calculated_vals_7", PADDR(saturation_calculated_vals[7]), PT_ACCESS, PA_HIDDEN, PT_DESCRIPTION, "CHECKPOINT VAR: saturation calculation values [7]",
+								PT_complex, "saturation_calculated_vals_8", PADDR(saturation_calculated_vals[8]), PT_ACCESS, PA_HIDDEN, PT_DESCRIPTION, "CHECKPOINT VAR: saturation calculation values [8]",
+								PT_complex, "saturation_calculated_vals_9", PADDR(saturation_calculated_vals[9]), PT_ACCESS, PA_HIDDEN, PT_DESCRIPTION, "CHECKPOINT VAR: saturation calculation values [9]",
+								PT_complex, "saturation_calculated_vals_10", PADDR(saturation_calculated_vals[10]), PT_ACCESS, PA_HIDDEN, PT_DESCRIPTION, "CHECKPOINT VAR: saturation calculation values [10]",
+								PT_complex, "saturation_calculated_vals_11", PADDR(saturation_calculated_vals[11]), PT_ACCESS, PA_HIDDEN, PT_DESCRIPTION, "CHECKPOINT VAR: saturation calculation values [11]",
+								PT_bool, "saturation_calculated_vals_enabled", PADDR(saturation_calculated_vals_enabled), PT_ACCESS, PA_HIDDEN, PT_DESCRIPTION, "CHECKPOINT VAR: saturation calculation values enabled",
 
 								nullptr) < 1 &&
 			errno)
@@ -256,7 +272,7 @@ int link_object::create(void)
 
 	current_in[0] = current_in[1] = current_in[2] = gld::complex(0, 0);
 
-	link_limits[0][0] = link_limits[0][1] = link_limits[0][2] = link_limits[1][0] = link_limits[1][1] = link_limits[1][2] = 0;
+	link_limits[0][0] = link_limits[0][1] = link_limits[0][2] = link_limits[1][0] = link_limits[1][1] = link_limits[1][2] = nullptr;
 
 	link_rating[0][0] = link_rating[0][1] = link_rating[0][2] = 1000; // Replicates current defaults of line objects
 	link_rating[1][0] = link_rating[1][1] = link_rating[1][2] = 2000;
@@ -293,7 +309,8 @@ int link_object::create(void)
 	A_phi = gld::complex(0.0, 0.0);
 	B_phi = gld::complex(0.0, 0.0);
 	hphi = nullptr;
-	saturation_calculated_vals = nullptr;
+	for (int i = 0; i < 12; i++) saturation_calculated_vals[i] = gld::complex(0.0, 0.0);
+	saturation_calculated_vals_enabled = false;
 
 	// Set defaults to see if anyone changes the integration methods
 	inrush_int_method_inductance = IRM_UNDEFINED;
@@ -4016,7 +4033,7 @@ int link_object::CurrentCalculation(int nodecall, bool link_fault_mode)
 					}
 
 					// See if saturation exists
-					if (saturation_calculated_vals != nullptr)
+					if (saturation_calculated_vals_enabled)
 					{
 						// Add in appropriate areas
 						for (jindex = 0; jindex < 6; jindex++)

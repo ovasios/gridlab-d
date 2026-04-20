@@ -182,7 +182,8 @@ public:
 	gld::complex A_phi;
 	gld::complex B_phi;
 	gld::complex *hphi;	//History term for phi
-	gld::complex *saturation_calculated_vals;
+	gld::complex saturation_calculated_vals[12];
+	bool saturation_calculated_vals_enabled;
 
 	//******************** Create a function from solver_nr to calculate Isat
 
