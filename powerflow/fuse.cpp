@@ -1027,10 +1027,11 @@ void fuse::set_fuse_full(char desired_status_A, char desired_status_B, char desi
 //Prevents system from magically "turning back on" a single islanded fuse when removed as a downstream element
 void fuse::set_fuse_full_reliability(unsigned char desired_status)
 {
-	unsigned char desA, desB, desC, phase_change;
+	unsigned char desA, desB, desC;
+	int16 phase_change;
 
 	//Determine what to change
-	phase_change = desired_status ^ (~faulted_fuse_phases);
+	phase_change = int16(desired_status) ^ (~faulted_fuse_phases);
 
 	//Figure out what phase configuration we want to change
 	if ((phase_change & 0x04) == 0x04)	//Phase A
@@ -1156,7 +1157,7 @@ OBJECT **fuse::get_object(OBJECT *obj, const char *name)
 void fuse::set_fuse_faulted_phases(unsigned char desired_status)
 {
 	//Remove from the fault tracker
-	phased_fuse_status |= desired_status;
+	phased_fuse_status |= int16(desired_status);
 }
 
 /**
