@@ -54,6 +54,12 @@ fuse::fuse(MODULE *mod) : link_object(mod)
 				PT_KEYWORD, "EXPONENTIAL", (enumeration)EXPONENTIAL,
 			PT_double, "current_limit[A]", PADDR(current_limit),
 			PT_double, "mean_replacement_time[s]",PADDR(mean_replacement_time),	//Retains compatibility with older files
+			PT_int16, "prev_full_status", PADDR(prev_full_status), PT_ACCESS, PA_HIDDEN, PT_DESCRIPTION, "CHECKPOINT VAR: Fully resolved status (ABC) - used for reliability and recalculation detection",
+			PT_int16, "phased_fuse_status", PADDR(phased_fuse_status), PT_ACCESS, PA_HIDDEN, PT_DESCRIPTION, "CHECKPOINT VAR: Used to track individual phase fuse status - mainly for reliability - use LSB - x0_XABC",
+			PT_int16, "faulted_fuse_phases", PADDR(faulted_fuse_phases), PT_ACCESS, PA_HIDDEN, PT_DESCRIPTION, "CHECKPOINT VAR: Used for phase faulting tracking - mainly for reliabiilty - replicated NR functionality so FBS can use it later",
+			PT_timestamp, "fix_time_A", PADDR(fix_time[0]), PT_ACCESS, PA_HIDDEN, PT_DESCRIPTION, "CHECKPOINT VAR: phase A scheduled repair time",
+			PT_timestamp, "fix_time_B", PADDR(fix_time[1]), PT_ACCESS, PA_HIDDEN, PT_DESCRIPTION, "CHECKPOINT VAR: phase B scheduled repair time",
+			PT_timestamp, "fix_time_C", PADDR(fix_time[2]), PT_ACCESS, PA_HIDDEN, PT_DESCRIPTION, "CHECKPOINT VAR: phase C scheduled repair time",
 			PT_double, "fuse_resistance[Ohm]",PADDR(fuse_resistance), PT_DESCRIPTION,"The resistance value of the fuse when it is not blown.",
 			nullptr) < 1) GL_THROW("unable to publish properties in %s",__FILE__);
 

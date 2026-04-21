@@ -21,7 +21,7 @@ public:
 	typedef enum {NONE=0, EXPONENTIAL=1} MTTRDIST;
 
 	enumeration restore_dist_type;
-	unsigned char prev_full_status;	///Fully resolved status (ABC) - used for reliability and recalculation detection
+	int16 prev_full_status;	///Fully resolved status (ABC) - used for reliability and recalculation detection
 
 	int create(void);
 	int init(OBJECT *parent);
@@ -43,8 +43,8 @@ public:
 
 	double current_limit;		//Current limit for fuses blowing
 
-	unsigned char phased_fuse_status;	//Used to track individual phase fuse status - mainly for reliability - use LSB - x0_XABC
-	unsigned char faulted_fuse_phases;	//Used for phase faulting tracking - mainly for reliabiilty - replicated NR functionality so FBS can use it later
+	int16 phased_fuse_status;	//Used to track individual phase fuse status - mainly for reliability - use LSB - x0_XABC
+	int16 faulted_fuse_phases;	//Used for phase faulting tracking - mainly for reliabiilty - replicated NR functionality so FBS can use it later
 	enumeration phase_A_state;
 	enumeration phase_B_state;
 	enumeration phase_C_state;
