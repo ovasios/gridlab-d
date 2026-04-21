@@ -654,7 +654,6 @@ TIMESTAMP fuse::postsync(TIMESTAMP t0)
 {
 	OBJECT *hdr = object_header(this);
 	char jindex;
-	unsigned char goodphases = 0x00;
 	TIMESTAMP Ret_Val[3], t1;
 
 	//FBS legacy code
@@ -667,7 +666,6 @@ TIMESTAMP fuse::postsync(TIMESTAMP t0)
 			if (phase_A_state == GOOD)	//Only bother if we are in service
 			{
 				Ret_Val[0] = TS_NEVER;		//We're still good, so we don't care when we come back
-				goodphases |= 0x04;			//Mark as good
 			}
 			else						//We're blown
 			{
@@ -686,7 +684,6 @@ TIMESTAMP fuse::postsync(TIMESTAMP t0)
 			if (phase_B_state == GOOD)	//Only bother if we are in service
 			{
 				Ret_Val[1] = TS_NEVER;		//We're still good, so we don't care when we come back
-				goodphases |= 0x02;			//Mark as good
 			}
 			else						//We're blown
 			{
@@ -706,7 +703,6 @@ TIMESTAMP fuse::postsync(TIMESTAMP t0)
 			if (phase_C_state == GOOD)	//Only bother if we are in service
 			{
 				Ret_Val[2] = TS_NEVER;		//We're still good, so we don't care when we come back
-				goodphases |= 0x01;			//Mark as good
 			}
 			else						//We're blown
 			{
@@ -1170,7 +1166,6 @@ void fuse::fuse_check(gld::set phase_to_check, gld::complex *fcurr)
 {
 	char indexval;
 	char phase_verbose;
-	unsigned char work_phase;
 	FUSESTATE *valstate;
 	TIMESTAMP *fixtime;
 	OBJECT *hdr = object_header(this);
@@ -1209,8 +1204,6 @@ void fuse::fuse_check(gld::set phase_to_check, gld::complex *fcurr)
 	//See which phases we need to check
 	if ((phases & phase_to_check) == phase_to_check)	//Check phase
 	{
-		work_phase = 0x04 >> indexval;	//Working variable, primarily for NR
-
 		if (*valstate == GOOD)	//Only bother if we are in service
 		{
 			//Check both directions, that way if we are reverse flowed it doesn't matter
