@@ -745,8 +745,6 @@ TIMESTAMP fuse::postsync(TIMESTAMP t0)
 // derived from function fuse_sync_function
 void fuse::fuse_change_status_function(void)
 {
-	unsigned char pres_status;
-
 	if (solver_method==SM_NR)	//Newton-Raphson checks
 	{
 		if (status == LS_OPEN)	//Fully opened means all go open
@@ -781,7 +779,6 @@ void fuse::fuse_change_status_function(void)
 					From_Y[0][0] = gld::complex(1.0/fuse_resistance,1.0/fuse_resistance);
 					b_mat[0][0] = gld::complex(fuse_resistance,fuse_resistance);
 					a_mat[0][0] = d_mat[0][0] = A_mat[0][0] = 1.0;
-					pres_status |= 0x04;
 					NR_branchdata[NR_branch_reference].phases |= 0x04;	//Ensure we're set
 					if (meshed_fault_checking_enabled)	//Different operating mode
 					{
@@ -808,7 +805,6 @@ void fuse::fuse_change_status_function(void)
 					From_Y[1][1] = gld::complex(1.0/fuse_resistance,1.0/fuse_resistance);
 					b_mat[1][1] = gld::complex(fuse_resistance,fuse_resistance);
 					a_mat[1][1] = d_mat[1][1] = A_mat[1][1] = 1.0;
-					pres_status |= 0x02;
 					NR_branchdata[NR_branch_reference].phases |= 0x02;	//Ensure we're set
 					if (meshed_fault_checking_enabled)	//Different operating mode
 					{
@@ -835,7 +831,6 @@ void fuse::fuse_change_status_function(void)
 					From_Y[2][2] = gld::complex(1.0/fuse_resistance,1.0/fuse_resistance);
 					b_mat[2][2] = gld::complex(fuse_resistance,fuse_resistance);
 					a_mat[2][2] = d_mat[2][2] = A_mat[2][2] = 1.0;
-					pres_status |= 0x01;
 					NR_branchdata[NR_branch_reference].phases |= 0x01;	//Ensure we're set
 					if (meshed_fault_checking_enabled)	//Different operating mode
 					{
@@ -881,7 +876,7 @@ void fuse::fuse_change_status_function(void)
 //reliability calls as well, so need to make sure the two call points are consistent
 void fuse::fuse_sync_function(void)
 {
-	unsigned char pres_status;
+	int16 pres_status;
 
 	if (solver_method==SM_NR)	//Newton-Raphson checks
 	{
